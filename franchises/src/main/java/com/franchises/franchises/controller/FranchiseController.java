@@ -1,5 +1,6 @@
 package com.franchises.franchises.controller;
 
+import com.franchises.franchises.dto.TopProductDTO;
 import com.franchises.franchises.entity.Branch;
 import com.franchises.franchises.entity.Franchise;
 import com.franchises.franchises.entity.Product;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -40,7 +42,7 @@ public class FranchiseController {
         return service.delete(id);
     }
 
-    // 1. Agregar una nueva sucursal a una franquicia
+    // Agregar una nueva sucursal a una franquicia
     @PostMapping("/{franchiseId}/branches")
     public Mono<ResponseEntity<Franchise>> addBranch(
             @PathVariable String franchiseId,
@@ -58,7 +60,7 @@ public class FranchiseController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    // 2. Agregar un nuevo producto a una sucursal
+    // Agregar un nuevo producto a una sucursal
     @PostMapping("/{franchiseId}/branches/{branchName}/products")
     public Mono<ResponseEntity<?>> addProductToBranch(
             @PathVariable String franchiseId,
@@ -85,7 +87,7 @@ public class FranchiseController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    // 3. Eliminar un producto de una sucursal
+    // Eliminar un producto de una sucursal
     @DeleteMapping("/{franchiseId}/branches/{branchName}/products/{productName}")
     public Mono<ResponseEntity<?>> removeProductFromBranch(
             @PathVariable String franchiseId,
@@ -110,7 +112,7 @@ public class FranchiseController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    // 4. Modificar stock de un producto
+    // Modificar stock de un producto
     @PutMapping("/{franchiseId}/branches/{branchName}/products/{productName}/stock")
     public Mono<ResponseEntity<?>> updateStock(
             @PathVariable String franchiseId,
@@ -138,6 +140,14 @@ public class FranchiseController {
                     return Mono.just(ResponseEntity.notFound().build());
                 })
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    // Obtener productos con más stock por sucursal
+    @GetMapping("/{franchiseId}/top-products-by-branch")
+    public Mono<ResponseEntity<List<TopProductDTO>>> getTopProductsByBranch(
+            @PathVariable String franchiseId) {
+
+        return service.getTopProductsByBranch(franchiseId);
     }
 
 }
